@@ -10,6 +10,6 @@ router.get('/post/:postId', commentController.getCommentsByPost);
 router.post('/post/:postId', verify, commentController.createComment);
 
 // Delete comment (admin only)
-router.delete('/:id', verify, verifyAdmin, commentController.deleteComment);
+router.delete('/:commentId', verify, verifyAdmin, commentController.deleteComment);
 
 module.exports = router;

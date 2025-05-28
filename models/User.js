@@ -5,7 +5,21 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
-  isAdmin: { type: Boolean, default: false }
+  isAdmin: { type: Boolean, default: false },
+
+  // Profile Fields
+  firstName: { type: String, trim: true },
+  lastName: { type: String, trim: true },
+  bio: { type: String, default: '' },
+  avatar: { type: String, default: '' }, // URL to profile picture
+  location: { type: String, default: '' },
+  socialLinks: {
+    twitter: { type: String, default: '' },
+    github: { type: String, default: '' },
+    linkedin: { type: String, default: '' },
+    facebook: { type: String, default: '' }
+  },
+  interests: [{ type: String }]
 }, { timestamps: true });
 
 // Hash password before saving
