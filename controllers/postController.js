@@ -20,25 +20,38 @@ exports.createPost = async (req, res, next) => {
 };
 
 // Get all blog posts (populate author username and email)
+// Get all blog posts (populate author username and email)
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find().populate('author', 'username email').sort({ createdAt: -1 });
+    let posts = await Post.find()
+      .populate('author', 'username email')
+      .sort({ createdAt: -1 });
+
+    // Filter out posts where author is null (e.g., deleted user)
+    posts = posts.filter(post => post.author !== null);
+
     res.json(posts);
   } catch (err) {
     next(err);
   }
 };
 
+
+// Get single blog post by ID
 // Get single blog post by ID
 exports.getPostById = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id).populate('author', 'username email');
+    
     if (!post) return res.status(404).json({ message: "Blog post not found" });
+    if (!post.author) return res.status(400).json({ message: "Author of this post no longer exists" });
+
     res.json(post);
   } catch (err) {
     next(err);
   }
 };
+
 
 // Update blog post - only author or admin can update
 exports.updatePost = async (req, res, next) => {
@@ -71,7 +84,7 @@ exports.deletePost = async (req, res, next) => {
       return res.status(403).json({ message: "Forbidden: Not the author or admin" });
     }
 
-    await Post.findByIdAndDelete(req.params.id);  // ✅ This deletes the post directly
+    await Post.findByIdAndDelete(req.params.id);  
     res.json({ message: "Blog post deleted successfully" });
   } catch (err) {
     next(err);

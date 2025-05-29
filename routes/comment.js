@@ -4,7 +4,7 @@ const commentController = require('../controllers/commentController');
 const { verify, verifyAdmin } = require('../auth');
 
 // Get comments for a blog post
-router.get('/post/:postId', commentController.getCommentsByPost);
+router.get('/post/:postId', verify, commentController.getCommentsByPost);
 
 // Create comment (authenticated)
 router.post('/post/:postId', verify, commentController.createComment);
