@@ -20,24 +20,32 @@ module.exports.createAccessToken = (user) => {
 
 //[SECTION] Token Verification
 
-module.exports.verify = (req, res, next) => {
-    let token = req.headers.authorization;
+const User = require('./models/User'); // adjust path
 
-    if (!token) {
-        return res.status(403).json({ auth: "Failed. No Token" });
-    }
+module.exports.verify = async (req, res, next) => {
+  let token = req.headers.authorization;
 
-    token = token.replace("Bearer ", ""); // ✅ Ensure correct token extraction
+  if (!token) {
+      return res.status(403).json({ auth: "Failed. No Token" });
+  }
 
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decodedToken) => {
-        if (err) {
-            return res.status(403).json({ auth: "Failed", message: err.message });
-        }
+  token = token.replace("Bearer ", "");
 
-        req.user = decodedToken; // ✅ Attach decoded user data to request
-        next();
-    });
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    
+    // Fetch full user from DB using id from token
+    const user = await User.findById(decodedToken.id).select('-password'); // exclude sensitive fields
+
+    if (!user) return res.status(404).json({ auth: "Failed", message: "User not found" });
+
+    req.user = user; // assign full user doc here
+    next();
+  } catch (err) {
+    return res.status(403).json({ auth: "Failed", message: err.message });
+  }
 };
+s
 
 
 //[SECTION] Verify Admin
