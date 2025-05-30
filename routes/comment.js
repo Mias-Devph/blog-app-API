@@ -16,7 +16,7 @@ router.put('/:commentId', verify, commentController.updateComment);
 router.delete('/:commentId', verify, commentController.deleteComment);
 
 // Delete comment (admin only)
-router.delete('/:commentId', verify, verifyAdmin, commentController.deleteCommentAdmin);
+router.delete('/admin/:commentId', verify, verifyAdmin, commentController.deleteCommentAdmin);
 
 
 
