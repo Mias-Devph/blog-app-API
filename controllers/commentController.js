@@ -31,6 +31,10 @@ exports.createComment = async (req, res, next) => {
     });
 
     await comment.save();
+
+    // Re-fetch with populated author
+    const populatedComment = await Comment.findById(comment._id).populate('author', 'username email');
+    
     res.status(201).json(comment);
   } catch (err) {
     next(err);
