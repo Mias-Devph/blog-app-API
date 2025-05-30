@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const User = require('./models/User'); // adjust path
 // [SECTION] Environment Setup
 require('dotenv').config();
 
@@ -21,7 +22,7 @@ module.exports.createAccessToken = (user) => {
 
 //[SECTION] Token Verification
 
-const User = require('./models/User'); // adjust path
+
 
 module.exports.verify = async (req, res, next) => {
   let token = req.headers.authorization;
@@ -46,8 +47,6 @@ module.exports.verify = async (req, res, next) => {
     return res.status(403).json({ auth: "Failed", message: err.message });
   }
 };
-s
-
 
 //[SECTION] Verify Admin
 
