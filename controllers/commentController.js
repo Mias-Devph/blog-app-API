@@ -13,7 +13,6 @@ exports.getCommentsByPost = async (req, res, next) => {
   }
 };
 
-// Create comment on a blogg post (authenticated users)
 exports.createComment = async (req, res, next) => {
   try {
     const { content } = req.body;
@@ -32,14 +31,16 @@ exports.createComment = async (req, res, next) => {
 
     await comment.save();
 
-    // Re-fetch with populated author
-    const populatedComment = await Comment.findById(comment._id).populate('author', 'username email');
-    
-    res.status(201).json(comment);
+    // 🔥 THIS IS CRUCIAL
+    const populatedComment = await Comment.findById(comment._id)
+      .populate('author', 'username email');
+
+    res.status(201).json(populatedComment);
   } catch (err) {
     next(err);
   }
 };
+
 
 // Delete comment - Admin only
 exports.deleteComment = async (req, res, next) => {
