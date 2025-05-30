@@ -96,7 +96,7 @@ exports.deleteCommentAdmin = async (req, res, next) => {
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
 
-    const comment = await Comment.findById(req.params.id);
+    const comment = await Comment.findById(req.params.commentId);
     if (!comment) return res.status(404).json({ message: "Comment not found" });
 
     await comment.deleteOne(); 
