@@ -9,7 +9,15 @@ router.get('/post/:postId',  commentController.getCommentsByPost);
 // Create comment (authenticated)
 router.post('/post/:postId', verify, commentController.createComment);
 
+// Update a comment
+router.put('/:commentId', verify, commentController.updateComment);
+
+// Delete a comment
+router.delete('/:commentId', verify, commentController.deleteComment);
+
 // Delete comment (admin only)
-router.delete('/:commentId', verify, verifyAdmin, commentController.deleteComment);
+router.delete('/:commentId', verify, verifyAdmin, commentController.deleteCommentAdmin);
+
+
 
 module.exports = router;

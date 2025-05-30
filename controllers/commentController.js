@@ -41,9 +41,55 @@ exports.createComment = async (req, res, next) => {
   }
 };
 
+exports.updateComment = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+    const { content } = req.body;
+
+    if (!content) return res.status(400).json({ message: "Content is required" });
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    // Ensure the logged-in user owns the comment
+    if (comment.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    comment.content = content;
+    await comment.save();
+
+    const updated = await Comment.findById(comment._id).populate('author', 'username email');
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteComment = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    if (comment.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    await comment.deleteOne();
+
+    res.json({ message: "Comment deleted" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
 
 // Delete comment - Admin only
-exports.deleteComment = async (req, res, next) => {
+exports.deleteCommentAdmin = async (req, res, next) => {
   try {
     // Only admin can delete comments
     if (!req.user.isAdmin) {
@@ -59,4 +105,6 @@ exports.deleteComment = async (req, res, next) => {
     next(err);
   }
 };
+
+
 
