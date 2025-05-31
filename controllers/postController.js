@@ -24,7 +24,7 @@ exports.createPost = async (req, res, next) => {
 exports.getAllPosts = async (req, res, next) => {
   try {
     let posts = await Post.find()
-      .populate('author', 'username email')
+      .populate('author', 'username email avatar')
       .sort({ createdAt: -1 });
 
     // Filter out posts where author is null (e.g., deleted user)
