@@ -5,7 +5,7 @@ const Post = require('../models/Post');
 exports.getCommentsByPost = async (req, res, next) => {
   try {
     const comments = await Comment.find({ post: req.params.postId })
-      .populate('author', 'username email')
+      .populate('author', 'username email avatar')
       .sort({ createdAt: -1 });
     res.json(comments);
   } catch (err) {
@@ -33,7 +33,7 @@ exports.createComment = async (req, res, next) => {
 
     // 🔥 THIS IS CRUCIAL
     const populatedComment = await Comment.findById(comment._id)
-      .populate('author', 'username email');
+      .populate('author', 'username email avatar');
 
     res.status(201).json(populatedComment);
   } catch (err) {
@@ -59,7 +59,7 @@ exports.updateComment = async (req, res, next) => {
     comment.content = content;
     await comment.save();
 
-    const updated = await Comment.findById(comment._id).populate('author', 'username email');
+    const updated = await Comment.findById(comment._id).populate('author', 'username email avatar');
     res.json(updated);
   } catch (err) {
     next(err);
