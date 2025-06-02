@@ -12,7 +12,8 @@ const app = express();
 
 const corsOptions = {
 	origin: [
-		'http://localhost:3000'
+		'http://localhost:3000',
+		'https://blog-app-client-livid.vercel.app/'
 		
 	],
 	credentials: true,
